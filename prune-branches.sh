@@ -6,8 +6,20 @@ if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
   exit 1
 fi
 
+# Check for unstaged changes
+if ! git diff --quiet; then
+    echo "There are unstaged changes. Please commit or stash them before running this script."
+    exit 1
+fi
+
 # Fetch updates from the remote repository and prune any deleted remote branches
 git fetch origin --prune
+
+# Checkout to the 'main' branch
+git checkout main
+
+# Pull the latest updates from the 'main' branch
+git pull origin main
 
 # List all local branches
 for branch in $(git branch --format "%(refname:short)"); do
